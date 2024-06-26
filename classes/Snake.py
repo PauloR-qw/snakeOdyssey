@@ -5,7 +5,7 @@ class Snake ():
 
     def __init__(self) -> None:
         
-        self.segmentsPos = [[20, 15], [19, 15], [18, 15], [17, 15]]
+        self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
         self.sense = 'right'
         self.segment = Rect(0, 0, 10, 10)
         self.color = '#006600'
