@@ -1,5 +1,5 @@
 from time import sleep
-from pygame import K_DOWN, K_LEFT, K_RIGHT, K_UP, K_w, K_a, K_s, K_d, Rect
+from pygame import K_DOWN, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_w, K_a, K_s, K_d, Rect
 
 class Snake ():
 
@@ -8,8 +8,10 @@ class Snake ():
         self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
         self.sense = 'right'
         self.segment = Rect(0, 0, 10, 10)
-        self.color = '#006600'
+        self.color = '#006600' # #66ff66 20%
         self.setInterval = 0.3
+        self.rush = False
+        self.rushInterval = self.setInterval * 0.3
     
     def getSnakeSense (self, keysPressed):
 
@@ -28,6 +30,11 @@ class Snake ():
             self.sense = 'up'
         elif senseLeft and self.sense != 'right':
             self.sense = 'left'
+
+        if keysPressed[K_LSHIFT]:
+            self.rush = True
+        else:
+            self.rush = False
        
     def setSnakePos (self, stopEvent, gridColumns, gridRows):
 
@@ -65,7 +72,11 @@ class Snake ():
                 self.segmentsPos[0][0] -= 1
                 if self.segmentsPos[0][0] < 0:
                     self.segmentsPos[0][0] = gridColumns - 1
-                
-            sleep(self.setInterval)
+            
+            if self.rush:
+                sleep(self.rushInterval)
+            else:
+                sleep(self.setInterval)
+
             if stopEvent.is_set():
                 break
