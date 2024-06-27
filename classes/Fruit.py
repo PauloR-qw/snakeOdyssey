@@ -10,7 +10,7 @@ class Fruit ():
         self.snakePos = snakePos
         self.gridLimits = gridLimits
         self.position = self.sortPosition()
-        self.color = '#660000' #red 20%
+        self.color = '#b30000' #red 35%
         self.fruitRect = Rect(0, 0, 9, 9)
     
     def sortPosition (self):

@@ -8,7 +8,7 @@ class Snake ():
         self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
         self.sense = 'right'
         self.segment = Rect(0, 0, 10, 10)
-        self.color = '#006600' # #66ff66 20%
+        self.color = '#008000' # #66ff66 20%
         self.setInterval = 0.3
         self.rush = False
         self.rushInterval = self.setInterval * 0.3
