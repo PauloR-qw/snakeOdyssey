@@ -1,3 +1,4 @@
+from classes.Fruit import Fruit
 from classes.Snake import Snake
 import threading
 import pygame
@@ -9,13 +10,20 @@ class Game ():
         pygame.display.init()
         pygame.display.set_caption('Snake Odyssey')
         
+        self.points = 0
+
         self.snake = Snake()
+        self.fruits = []
+        self.fruitsLimit = 4
+
         self.winWidth = 800
         self.winHeight = 600
         self.win = pygame.display.set_mode(size=(self.winWidth, self.winHeight))
+
         self.gridColumns = self.winWidth/self.snake.segment.width
         self.gridRows = self.winHeight/self.snake.segment.height
         self.clock = pygame.time.Clock()
+        self.frameCount = 0
         self.run = True
 
         self.threadStopEvent = threading.Event()
@@ -35,9 +43,14 @@ class Game ():
             self.listenQuit()
             self.listenKeys()
 
+            self.createFruit()
             self.drawSnake()
-            
+            self.listenEat()
+
             pygame.display.update()
+
+            if len(self.fruits) < self.fruitsLimit:
+                self.frameCount += 1
             self.clock.tick(60)
 
         pygame.quit()
@@ -65,6 +78,28 @@ class Game ():
             newRect = newRect.move(sPos).inflate(-1, -1)
 
             pygame.draw.rect(self.win, self.snake.color, newRect)
+    
+    def createFruit (self):
+
+        if self.frameCount/60 >= 3 and len(self.fruits) < 3:
+
+            newFruit = Fruit(
+                self.snake.segmentsPos,
+                (self.gridColumns, self.gridRows)
+                )
+            
+            fPos = self.calcNonGridPos(
+                newFruit.position[0],
+                newFruit.position[1]
+                )
+
+            newFruit.fruitRect = newFruit.fruitRect.move(fPos)
+            
+            self.fruits.append(newFruit)
+            self.frameCount = 0
+        
+        for fruit in self.fruits:
+            pygame.draw.rect(self.win, fruit.color, fruit.fruitRect)
 
     def calcNonGridPos (self, xPos: int, yPos: int):
 
@@ -77,6 +112,15 @@ class Game ():
 
         keyScan = pygame.key.get_pressed()
         self.snake.getSnakeSense(keyScan)
+    
+    def listenEat (self):
+        for fruit in self.fruits:
+            if self.snake.segmentsPos[0] == fruit.position:
+                self.fruits.remove(fruit)
+                self.points += 1
+                self.snake.segmentsPos.append(
+                    self.snake.segmentsPos[-1]
+                )
 
 
 gameInstance = Game()
