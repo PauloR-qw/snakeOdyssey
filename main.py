@@ -81,7 +81,7 @@ class Game ():
     
     def createFruit (self):
 
-        if self.frameCount/60 >= 3 and len(self.fruits) < 3:
+        if self.frameCount/60 >= 3:
 
             newFruit = Fruit(
                 self.snake.segmentsPos,
