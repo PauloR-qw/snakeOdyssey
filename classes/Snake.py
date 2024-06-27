@@ -6,6 +6,7 @@ class Snake ():
     def __init__(self) -> None:
         
         self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
+        self.newSegmentsPos = []
         self.sense = 'right'
         self.segment = Rect(0, 0, 10, 10)
         self.color = '#008000' # #66ff66 20%
@@ -35,48 +36,60 @@ class Snake ():
             self.rush = True
         else:
             self.rush = False
-       
+    
     def setSnakePos (self, stopEvent, gridColumns, gridRows):
 
         while (True):
             
-            self.segmentsPos.insert(
+            self.newSegmentsPos = self.segmentsPos.copy()
+
+            self.newSegmentsPos.insert(
                 0,
-                [self.segmentsPos[0][0], self.segmentsPos[0][1]]
+                [self.newSegmentsPos[0][0], self.newSegmentsPos[0][1]]
                 )
-            self.segmentsPos.pop()
+            self.newSegmentsPos.pop()
             
             # Calculando a posição da cabeça da cobrinha.
             # Os seguimentos anteriores, da cobrinha, 'herdarão'
             # umas o estado das outras, a começar pela cabeça.
+
             if self.sense == 'down':
 
-                self.segmentsPos[0][1] += 1
-                if self.segmentsPos[0][1] > gridRows - 1:
-                    self.segmentsPos[0][1] = 0
+                self.newSegmentsPos[0][1] += 1
+                if self.newSegmentsPos[0][1] > gridRows - 1:
+                    self.newSegmentsPos[0][1] = 0
 
             elif self.sense == 'right':
 
-                self.segmentsPos[0][0] += 1
-                if self.segmentsPos[0][0] > gridColumns - 1:
-                    self.segmentsPos[0][0] = 0
+                self.newSegmentsPos[0][0] += 1
+                if self.newSegmentsPos[0][0] > gridColumns - 1:
+                    self.newSegmentsPos[0][0] = 0
 
             elif self.sense == 'up':
 
-                self.segmentsPos[0][1] -= 1
-                if self.segmentsPos[0][1] < 0:
-                    self.segmentsPos[0][1] = gridRows - 1
+                self.newSegmentsPos[0][1] -= 1
+                if self.newSegmentsPos[0][1] < 0:
+                    self.newSegmentsPos[0][1] = gridRows - 1
 
             elif self.sense == 'left':
 
-                self.segmentsPos[0][0] -= 1
-                if self.segmentsPos[0][0] < 0:
-                    self.segmentsPos[0][0] = gridColumns - 1
-            
-            if self.rush:
-                sleep(self.rushInterval)
-            else:
-                sleep(self.setInterval)
+                self.newSegmentsPos[0][0] -= 1
+                if self.newSegmentsPos[0][0] < 0:
+                    self.newSegmentsPos[0][0] = gridColumns - 1
 
-            if stopEvent.is_set():
+            if self.newSegmentsPos[0] in self.newSegmentsPos[3:]:
+
+                self.newSegmentsPos = self.segmentsPos.copy()
                 break
+
+            else:
+
+                self.segmentsPos = self.newSegmentsPos.copy()
+
+                if self.rush:
+                    sleep(self.rushInterval)
+                else:
+                    sleep(self.setInterval)
+
+                if stopEvent.is_set():
+                    break
