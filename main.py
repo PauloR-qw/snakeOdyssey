@@ -1,5 +1,6 @@
 from classes.Fruit import Fruit
 from classes.Snake import Snake
+from classes.Dials import Dials
 import threading
 import pygame
 
@@ -7,10 +8,11 @@ class Game ():
 
     def __init__(self) -> None:
         
+        pygame.font.init()
         pygame.display.init()
         pygame.display.set_caption('Snake Odyssey')
         
-        self.points = 0
+        self.dials = Dials()
 
         self.snake = Snake()
         self.fruits = []
@@ -46,6 +48,8 @@ class Game ():
             self.createFruit()
             self.drawSnake()
             self.listenEat()
+
+            self.dials.renderScore(self.win)
 
             pygame.display.update()
 
@@ -117,7 +121,7 @@ class Game ():
         for fruit in self.fruits:
             if self.snake.segmentsPos[0] == fruit.position:
                 self.fruits.remove(fruit)
-                self.points += 1
+                self.dials.score[1] += 1
                 self.snake.segmentsPos.append(
                     self.snake.segmentsPos[-1]
                 )
