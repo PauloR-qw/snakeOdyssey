@@ -25,7 +25,7 @@ class Game ():
         self.gridColumns = self.winWidth/self.snake.segment.width
         self.gridRows = self.winHeight/self.snake.segment.height
         self.clock = pygame.time.Clock()
-        self.frameCount = 0
+        self.fc_fruits = 0
         self.run = True
 
         self.threadStopEvent = threading.Event()
@@ -54,7 +54,7 @@ class Game ():
             pygame.display.update()
 
             if len(self.fruits) < self.fruitsLimit:
-                self.frameCount += 1
+                self.fc_fruits += 1
             self.clock.tick(60)
 
         pygame.quit()
@@ -85,7 +85,7 @@ class Game ():
     
     def createFruit (self):
 
-        if self.frameCount/60 >= 3:
+        if self.fc_fruits/60 >= 3:
 
             newFruit = Fruit(
                 self.snake.segmentsPos,
@@ -100,7 +100,7 @@ class Game ():
             newFruit.fruitRect = newFruit.fruitRect.move(fPos)
             
             self.fruits.append(newFruit)
-            self.frameCount = 0
+            self.fc_fruits = 0
         
         for fruit in self.fruits:
             pygame.draw.rect(self.win, fruit.color, fruit.fruitRect)
