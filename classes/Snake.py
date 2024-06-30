@@ -14,6 +14,7 @@ class Snake ():
         self.setInterval = 0.3
         self.rush = False
         self.rushInterval = self.setInterval * 0.3
+        self.snakeHit = False
     
     def getSnakeSense (self, keysPressed):
 
@@ -42,9 +43,8 @@ class Snake ():
             self.rush = False
     
     def setSnakePos (self, stopEvent, gridColumns, gridRows):
-
+        
         while (True):
-            
             self.newSegmentsPos = self.segmentsPos.copy()
 
             self.newSegmentsPos.insert(
@@ -56,7 +56,7 @@ class Snake ():
             # Calculando a posição da cabeça da cobrinha.
             # Os seguimentos anteriores, da cobrinha, 'herdarão'
             # umas o estado das outras, a começar pela cabeça.
-
+            
             if self.sense[0] == 'down':
 
                 self.newSegmentsPos[0][1] += 1
@@ -81,13 +81,14 @@ class Snake ():
                 if self.newSegmentsPos[0][0] < 0:
                     self.newSegmentsPos[0][0] = gridColumns - 1
 
+
             if self.newSegmentsPos[0] == self.newSegmentsPos[2]:
 
                 self.sense[0] = copy(self.sense[1])
 
             elif self.newSegmentsPos[0] in self.newSegmentsPos[3:]:
 
-                self.newSegmentsPos = self.segmentsPos.copy()
+                self.snakeHit = True
                 break
 
             else:

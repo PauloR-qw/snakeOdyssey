@@ -26,7 +26,10 @@ class Game ():
         self.gridRows = self.winHeight/self.snake.segment.height
         self.clock = pygame.time.Clock()
         self.fc_fruits = 0
+        self.fc_match = 0
         self.run = True
+
+        self.playerWon = False
 
         self.threadStopEvent = threading.Event()
         self.snakePosThread = threading.Thread(
@@ -50,11 +53,17 @@ class Game ():
             self.listenEat()
 
             self.dials.renderScore(self.win)
+            self.dials.renderSnakeSize(self.win, self.snake)
+            self.dials.renderMatchTime(self.win, self.fc_match)
 
             pygame.display.update()
 
             if len(self.fruits) < self.fruitsLimit:
                 self.fc_fruits += 1
+
+            if not self.snake.snakeHit:
+                self.fc_match += 1
+
             self.clock.tick(60)
 
         pygame.quit()
@@ -85,7 +94,7 @@ class Game ():
     
     def createFruit (self):
 
-        if self.fc_fruits/60 >= 3:
+        if (self.fc_fruits/60 >= 3) and not self.snake.snakeHit:
 
             newFruit = Fruit(
                 self.snake.segmentsPos,
