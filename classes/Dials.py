@@ -6,7 +6,7 @@ class Dials ():
     
     def __init__(self) -> None:
 
-        # Dial title, value
+        # Dial title, inital value
         self.score = ['Score', 0]
         self.snakeSize = ['Size', 3]
 
@@ -20,16 +20,20 @@ class Dials ():
         score = self.score[0] + ': '
         score += str(self.score[1]).zfill(4)
         
+        dest = (10, 10)
         scoreSurface = self.font.render(score, True, self.textColor)
-        win.blit(scoreSurface, (10, 10))
+        win.blit(scoreSurface, dest)
+        self.score.append(dest[0] + scoreSurface.get_width())
     
     def renderSnakeSize (self, win, snake):
 
         snakeSize = self.snakeSize[0] + ': '
         snakeSize += str(len(snake.segmentsPos)).zfill(3)
 
+        dest = (self.score.pop() + 10, 10)
         snakeSizeSurface = self.font.render(snakeSize, self.antialias, self.textColor)
-        win.blit(snakeSizeSurface, (100, 10))
+        win.blit(snakeSizeSurface, dest)
+        self.snakeSize.append(dest[0] + snakeSizeSurface.get_width())
     
     def renderMatchTime (self, win, fc_match):
 
@@ -37,6 +41,7 @@ class Dials ():
         matchTime = 'Time: '
         matchTime += str(time)[2:]
 
+        dest = (self.snakeSize.pop() + 10, 10)
         matchTimeSurface = self.font.render(matchTime, self.antialias, self.textColor)
-        win.blit(matchTimeSurface, (180, 10))
+        win.blit(matchTimeSurface, dest)
         
