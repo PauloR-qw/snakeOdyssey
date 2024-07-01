@@ -1,4 +1,5 @@
 from copy import copy
+from operator import contains
 from time import sleep
 from pygame import K_DOWN, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_w, K_a, K_s, K_d, Rect
 
@@ -23,15 +24,17 @@ class Snake:
         senseUp = keysPressed[K_UP] or keysPressed[K_w]
         senseLeft = keysPressed[K_LEFT] or keysPressed[K_a]
 
+        contrarySenses = [['left', 'right'], ['up', 'down']]
+
         # Definindo a direção da cobrinha de acordo com as
         # teclas pressionadas.
-        if senseDown and self.sense[0] != 'up' and self.sense[0] != 'down':
+        if senseDown and not contains(contrarySenses[1], self.sense[0]):
             self.sense.insert(0, 'down')
-        elif senseRight and self.sense[0] != 'left' and self.sense[0] != 'right':
+        elif senseRight and not contains(contrarySenses[0], self.sense[0]):
             self.sense.insert(0, 'right')
-        elif senseUp and self.sense[0] != 'down' and self.sense[0] != 'up':
+        elif senseUp and not contains(contrarySenses[1], self.sense[0]):
             self.sense.insert(0, 'up')
-        elif senseLeft and self.sense[0] != 'right' and self.sense[0] != 'left':
+        elif senseLeft and not contains(contrarySenses[0], self.sense[0]):
             self.sense.insert(0, 'left')
 
         if len(self.sense) > 2:
