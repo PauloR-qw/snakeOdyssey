@@ -51,7 +51,7 @@ class Snake:
                 0,
                 [self.newSegmentsPos[0][0], self.newSegmentsPos[0][1]]
                 )
-            self.newSegmentsPos.pop()
+            del self.newSegmentsPos[-1]
             
             # Calculando a posição da cabeça da cobrinha.
             # Os seguimentos anteriores, da cobrinha, 'herdarão'
