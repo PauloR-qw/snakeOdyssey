@@ -2,9 +2,9 @@ from copy import copy
 from time import sleep
 from pygame import K_DOWN, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_w, K_a, K_s, K_d, Rect
 
-class Snake ():
+class Snake:
 
-    def __init__(self) -> None:
+    def __init__(self):
         
         self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
         self.newSegmentsPos = []

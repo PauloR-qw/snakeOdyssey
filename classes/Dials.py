@@ -2,9 +2,9 @@ from pygame import font
 from math import trunc
 from datetime import timedelta
 
-class Dials ():
+class Dials:
     
-    def __init__(self) -> None:
+    def __init__(self):
 
         # Dial title, inital value
         self.score = ['Score', 0]

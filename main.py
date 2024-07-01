@@ -4,9 +4,9 @@ from classes.Dials import Dials
 import threading
 import pygame
 
-class Game ():
+class Game:
 
-    def __init__(self) -> None:
+    def __init__(self):
         
         pygame.font.init()
         pygame.display.init()
@@ -39,7 +39,7 @@ class Game ():
         self.snakePosThread.start()
         self.drawSnake()
     
-    def mainLoop (self) -> None:
+    def mainLoop (self):
 
         while (self.run):
             

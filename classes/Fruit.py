@@ -1,9 +1,8 @@
 from typing import List, Tuple
 from random import randint
-
 from pygame import Rect
 
-class Fruit ():
+class Fruit:
     
     def __init__(self, snakePos:List, gridLimits:Tuple):
         
