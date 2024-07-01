@@ -16,7 +16,7 @@ class Snake:
         self.rushInterval = self.setInterval * 0.3
         self.snakeHit = False
     
-    def getSnakeSense (self, keysPressed):
+    def setSnakeSense (self, keysPressed):
 
         senseDown = keysPressed[K_DOWN] or keysPressed[K_s]
         senseRight = keysPressed[K_RIGHT] or keysPressed[K_d]

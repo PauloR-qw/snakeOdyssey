@@ -46,7 +46,7 @@ class Game:
             self.win.fill('#1a1a1a')
 
             self.listenQuit()
-            self.listenKeys()
+            self.snake.setSnakeSense(self.listenKeys())
 
             self.createFruit()
             self.drawSnake()
@@ -124,7 +124,7 @@ class Game:
     def listenKeys (self):
 
         keyScan = pygame.key.get_pressed()
-        self.snake.getSnakeSense(keyScan)
+        return keyScan
     
     def listenEat (self):
         for fruit in self.fruits:
