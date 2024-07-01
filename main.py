@@ -1,7 +1,9 @@
+from operator import contains
 from classes.Fruit import Fruit
 from classes.Snake import Snake
 from classes.Dials import Dials
 import threading
+import asyncio
 import pygame
 
 class Game:
@@ -12,6 +14,8 @@ class Game:
         pygame.display.init()
         pygame.display.set_caption('Snake Odyssey')
         
+        self.started = False
+
         self.dials = Dials()
 
         self.snake = Snake()
@@ -21,6 +25,7 @@ class Game:
         self.winWidth = 800
         self.winHeight = 600
         self.win = pygame.display.set_mode(size=(self.winWidth, self.winHeight))
+        self.winBgColor = '#1a1a1a'
 
         self.gridColumns = self.winWidth/self.snake.segment.width
         self.gridRows = self.winHeight/self.snake.segment.height
@@ -43,10 +48,12 @@ class Game:
 
         while (self.run):
             
-            self.win.fill('#1a1a1a')
+            self.win.fill(self.winBgColor)
 
             self.listenQuit()
             self.snake.setSnakeSense(self.listenKeys())
+            
+            asyncio.run(self.initMenu())
 
             self.createFruit()
             self.drawSnake()
@@ -120,6 +127,81 @@ class Game:
         yResult = yPos*(self.winHeight/self.gridRows)
 
         return (xResult, yResult)
+
+    async def initMenu (self):
+        
+        mouseOverStart = False
+        mouseOverQuit = False
+
+        while (not self.started and self.run):
+
+            titleFont = pygame.font.SysFont('UbuntuMono', 44)
+            titleSurface = titleFont.render(
+                'Snake Odyssey', 
+                True, 
+                '#ffffff',
+                self.winBgColor
+                )
+            titlePos = (
+                (self.winWidth/2) - (titleSurface.get_width()/2), 
+                (self.winHeight/3) - (titleSurface.get_height()/2)
+                )
+            
+            buttonFont = pygame.font.SysFont('UbuntuMono', 25)
+            startButton = buttonFont.render(
+                'Start',
+                True,
+                '#0d0d0d' if mouseOverStart else '#ffffff',
+                '#e6e6e6' if mouseOverStart else self.winBgColor
+            )
+            startPos = (
+                (self.winWidth/2) - (startButton.get_width()/2), 
+                (self.winHeight/(4/3)) - (startButton.get_height()/2)
+            )
+            
+            quitButton = buttonFont.render(
+                'Quit',
+                True,
+                '#0d0d0d' if mouseOverQuit else '#ffffff',
+                '#e6e6e6' if mouseOverQuit else self.winBgColor
+            )
+            quitPos = (
+                (self.winWidth/2) - (quitButton.get_width()/2), 
+                (startPos[1] + startButton.get_height()) + 10
+            )
+            
+            self.win.blit(titleSurface, titlePos)
+            startRect = self.win.blit(startButton, startPos)
+            quitRect = self.win.blit(quitButton, quitPos)
+
+            mouseClick = self.listenClick()
+
+            if startRect.collidepoint(pygame.mouse.get_pos()):
+                mouseOverStart = True
+                if mouseClick != None and mouseClick[0]:
+                    self.started = True
+            else:
+                mouseOverStart = False
+
+            if quitRect.collidepoint(pygame.mouse.get_pos()):
+                mouseOverQuit = True
+                if mouseClick != None and mouseClick[0]:
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+            else:
+                mouseOverQuit = False
+
+            self.listenQuit()
+            pygame.display.update()
+            self.clock.tick(60)
+
+    def listenClick (self):
+    
+        mouseButtons = pygame.mouse.get_pressed()
+
+        if contains(mouseButtons, True):
+            return mouseButtons
+        else:
+            return None
 
     def listenKeys (self):
 
