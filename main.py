@@ -39,9 +39,6 @@ class Game:
             target=self.snake.setSnakePos,
             args=[self.threadStopEvent, self.gridColumns, self.gridRows])
         
-        self.snakePosThread.start()
-        self.drawSnake()
-    
     def mainLoop (self):
 
         while (self.run):
@@ -181,6 +178,8 @@ class Game:
                 mouseOverStart = True
                 if mouseClick != None and mouseClick[0]:
                     self.started = True
+                    if self.snakePosThread != None:
+                        self.snakePosThread.start()
             else:
                 mouseOverStart = False
 
