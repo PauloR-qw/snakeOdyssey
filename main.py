@@ -34,8 +34,6 @@ class Game:
         self.fc_match = 0
         self.run = True
 
-        self.playerWon = False
-
         self.threadStopEvent = threading.Event()
         self.snakePosThread = threading.Thread(
             target=self.snake.setSnakePos,
@@ -70,6 +68,8 @@ class Game:
 
             if not self.snake.snakeHit:
                 self.fc_match += 1
+            else:
+                asyncio.run(self.restartMenu())
 
             self.clock.tick(60)
 
@@ -78,9 +78,10 @@ class Game:
     def listenQuit (self):
 
         if len(pygame.event.get(eventtype=pygame.QUIT)) > 0:
-
-            self.threadStopEvent.set()
-            self.snakePosThread.join()
+            
+            if self.snakePosThread != None:
+                self.threadStopEvent.set()
+                self.snakePosThread.join()
 
             self.run = False
         
@@ -189,6 +190,72 @@ class Game:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
             else:
                 mouseOverQuit = False
+
+            self.listenQuit()
+            pygame.display.update()
+            self.clock.tick(60)
+
+    async def restartMenu (self):
+
+        mouseOverRestart = False
+        while (self.run):
+
+            lostFont = pygame.font.SysFont('UbuntuMono', 34)
+            lostSurface = lostFont.render(
+                'You Lose', 
+                True, 
+                '#ffffff',
+                self.winBgColor
+                )
+            lostPos = (
+                (self.winWidth/2) - (lostSurface.get_width()/2), 
+                (self.winHeight/3) - (lostSurface.get_height()/2)
+                )
+            
+            restartButton = lostFont.render(
+                'Restart',
+                True,
+                '#0d0d0d' if mouseOverRestart else '#ffffff',
+                '#e6e6e6' if mouseOverRestart else self.winBgColor
+            )
+            resButtonPos = (
+                (self.winWidth/2) - (restartButton.get_width()/2), 
+                (self.winHeight/(4/3)) - (restartButton.get_height()/2)
+            )
+
+            self.win.blit(lostSurface, lostPos)
+            restartRect = self.win.blit(restartButton, resButtonPos)
+
+            mouseClick = self.listenClick()
+
+            if restartRect.collidepoint(pygame.mouse.get_pos()):
+                
+                mouseOverRestart = True
+                
+                if mouseClick != None and mouseClick[0]:
+
+                    # Recomeçar todo o jogo; zerar todas as variáveis.
+                    self.dials = Dials()
+                    self.fruits = []
+                    
+                    self.snake.snakeHit = False
+                    self.snake.segmentsPos = [[20, 15], [19, 15], [18, 15]]
+                    self.snake.newSegmentsPos = []
+                    self.snake.sense = ['right']
+                    self.snake.setInterval = 0.3
+
+                    self.snakePosThread = None
+                    self.snakePosThread = threading.Thread(
+                    target=self.snake.setSnakePos,
+                    args=[self.threadStopEvent, self.gridColumns, self.gridRows])
+                    self.snakePosThread.start()
+
+                    self.fc_fruits = 0
+                    self.fc_match = 0
+                    break
+
+            else:
+                mouseOverRestart = False
 
             self.listenQuit()
             pygame.display.update()
