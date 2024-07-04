@@ -76,7 +76,7 @@ class Game:
 
         if len(pygame.event.get(eventtype=pygame.QUIT)) > 0:
             
-            if self.snakePosThread != None:
+            if self.snakePosThread != None and self.snakePosThread.is_alive():
                 self.threadStopEvent.set()
                 self.snakePosThread.join()
 
