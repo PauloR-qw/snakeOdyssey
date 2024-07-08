@@ -1,4 +1,5 @@
 from operator import contains
+from classes.Data import Data
 from classes.Fruit import Fruit
 from classes.Snake import Snake
 from classes.Dials import Dials
@@ -54,6 +55,7 @@ class Game:
             self.drawSnake()
             self.listenEat()
 
+            self.dials.trans = Data.getTrans()['dials']
             self.dials.renderScore(self.win)
             self.dials.renderSnakeSize(self.win, self.snake)
             self.dials.renderMatchTime(self.win, self.fc_match)
@@ -130,8 +132,15 @@ class Game:
         
         mouseOverStart = False
         mouseOverQuit = False
+        mouseOverLang = False
+        mouseOverPort = False
+        mouseOverEn = False
+        langSelect = False
 
         while (not self.started and self.run):
+
+            trans = Data.getTrans()
+            self.win.fill(self.winBgColor)
 
             titleFont = pygame.font.SysFont('UbuntuMono', 44)
             titleSurface = titleFont.render(
@@ -147,7 +156,7 @@ class Game:
             
             buttonFont = pygame.font.SysFont('UbuntuMono', 25)
             startButton = buttonFont.render(
-                'Start',
+                trans['init']['start'],
                 True,
                 '#0d0d0d' if mouseOverStart else '#ffffff',
                 '#e6e6e6' if mouseOverStart else self.winBgColor
@@ -158,7 +167,7 @@ class Game:
             )
             
             quitButton = buttonFont.render(
-                'Quit',
+                trans['init']['quit'],
                 True,
                 '#0d0d0d' if mouseOverQuit else '#ffffff',
                 '#e6e6e6' if mouseOverQuit else self.winBgColor
@@ -167,10 +176,44 @@ class Game:
                 (self.winWidth/2) - (quitButton.get_width()/2), 
                 (startPos[1] + startButton.get_height()) + 10
             )
+
+            langButton = buttonFont.render(
+                trans['init']['lang'],
+                True,
+                '#0d0d0d' if mouseOverLang else '#ffffff',
+                '#e6e6e6' if mouseOverLang else self.winBgColor
+            )
+            langPos = (
+                self.winWidth - langButton.get_width() - 15, 
+                self.winHeight - langButton.get_height() - 10
+            )
+
+            langPortuguese = buttonFont.render(
+                'Português (BR)',
+                True,
+                '#0d0d0d' if mouseOverPort else '#ffffff',
+                '#e6e6e6' if mouseOverPort else self.winBgColor
+            )
+            langPortPos = (
+                self.winWidth - langPortuguese.get_width() - 15,
+                langPos[1] - langPortuguese.get_height() - 10
+            )
+
+            langEnglish = buttonFont.render(
+                'English',
+                True,
+                '#0d0d0d' if mouseOverEn else '#ffffff',
+                '#e6e6e6' if mouseOverEn else self.winBgColor
+            )
+            langEnPos = (
+                self.winWidth - langEnglish.get_width() - 15,
+                langPortPos[1] - langEnglish.get_height() - 10
+            )
             
             self.win.blit(titleSurface, titlePos)
             startRect = self.win.blit(startButton, startPos)
             quitRect = self.win.blit(quitButton, quitPos)
+            langRect = self.win.blit(langButton, langPos)
 
             mouseClick = self.listenClick()
 
@@ -190,6 +233,54 @@ class Game:
             else:
                 mouseOverQuit = False
 
+            if langRect.collidepoint(pygame.mouse.get_pos()):
+                mouseOverLang = True
+            else:
+                mouseOverLang = False
+
+            for e in pygame.event.get(pygame.MOUSEBUTTONUP, False):
+                
+                if langRect.collidepoint(e.pos):
+                    langSelect = not langSelect
+
+            if langSelect:
+                
+                portRect = self.win.blit(langPortuguese, langPortPos)
+                enRect = self.win.blit(langEnglish, langEnPos)
+
+                if portRect.collidepoint(pygame.mouse.get_pos()):
+
+                    mouseOverPort = True
+                
+                    if mouseClick != None and mouseClick[0]:
+                        
+                        langSelect = False
+                        config = Data.getConfigs()
+                        config['language'] = 'pt-br'
+                        Data.setConfigs(config)
+
+                else:
+                    mouseOverPort = False
+                
+                if enRect.collidepoint(pygame.mouse.get_pos()):
+                    mouseOverEn = True
+
+                    if mouseClick != None and mouseClick[0]:
+
+                        langSelect = False
+                        config = Data.getConfigs()
+                        config['language'] = 'en'
+                        Data.setConfigs(config)
+
+                else:                
+                    mouseOverEn = False
+            
+            else:
+                # self.win.subsurface(langPortPos, langPortuguese.get_size()).fill(self.winBgColor)
+                # self.win.subsurface(langEnPos, langEnglish.get_size()).fill(self.winBgColor)
+                pass
+
+
             self.listenQuit()
             pygame.display.update()
             self.clock.tick(60)
@@ -197,11 +288,13 @@ class Game:
     async def restartMenu (self):
 
         mouseOverRestart = False
+        trans = Data.getTrans()['restart']
+
         while (self.run):
 
             lostFont = pygame.font.SysFont('UbuntuMono', 34)
             lostSurface = lostFont.render(
-                'You Lose', 
+                trans['lose'], 
                 True, 
                 '#ffffff',
                 self.winBgColor
@@ -212,7 +305,7 @@ class Game:
                 )
             
             restartButton = lostFont.render(
-                'Restart',
+                trans['restart'],
                 True,
                 '#0d0d0d' if mouseOverRestart else '#ffffff',
                 '#e6e6e6' if mouseOverRestart else self.winBgColor
@@ -278,11 +371,10 @@ class Game:
         for fruit in self.fruits:
             if self.snake.segmentsPos[0] == fruit.position:
                 self.fruits.remove(fruit)
-                self.dials.score[1] += 1
+                self.dials.score += 1
                 self.snake.segmentsPos.append(
                     self.snake.segmentsPos[-1]
                 )
-
 
 gameInstance = Game()
 gameInstance.mainLoop()

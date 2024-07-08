@@ -1,0 +1,20 @@
+{
+
+    "init": {
+        "start": "Iniciar",
+        "quit": "Sair",
+        "lang": "Linguagem"
+    },
+
+    "restart": {
+        "lose": "Você Perdeu",
+        "restart": "Recomeçar"
+    },
+
+    "dials": {
+        "time": "Tempo",
+        "size": "Tamanho",
+        "score": "Score"
+    }
+
+}
