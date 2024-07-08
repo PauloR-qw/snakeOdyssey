@@ -23,8 +23,8 @@ class Game:
         self.fruits = []
         self.fruitsLimit = 4
 
-        self.winWidth = 800
-        self.winHeight = 600
+        self.winWidth = 450
+        self.winHeight = 350
         self.win = pygame.display.set_mode(size=(self.winWidth, self.winHeight))
         self.winBgColor = '#1a1a1a'
 
