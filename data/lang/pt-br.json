@@ -8,7 +8,8 @@
 
     "restart": {
         "lose": "Você Perdeu",
-        "restart": "Recomeçar"
+        "restart": "Recomeçar",
+        "init": "Menu Inicial"
     },
 
     "dials": {

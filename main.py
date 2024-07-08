@@ -282,6 +282,7 @@ class Game:
     async def restartMenu (self):
 
         mouseOverRestart = False
+        mouseOverHome = False
         trans = Data.getTrans()['restart']
 
         while (self.run):
@@ -310,8 +311,20 @@ class Game:
                 (self.winHeight/(4/3)) - (restartButton.get_height()/2)
             )
 
+            homeMenuButton = buttonFont.render(
+                trans['init'],
+                True,
+                '#0d0d0d' if mouseOverHome else '#ffffff',
+                '#e6e6e6' if mouseOverHome else self.winBgColor
+            )
+            homePos = (
+                (self.winWidth/2) - (homeMenuButton.get_width()/2), 
+                resButtonPos[1] + homeMenuButton.get_height() + 10
+            )
+
             self.win.blit(lostSurface, lostPos)
             restartRect = self.win.blit(restartButton, resButtonPos)
+            homeRect = self.win.blit(homeMenuButton, homePos)
 
             mouseClick = self.listenClick()
 
@@ -321,28 +334,24 @@ class Game:
                 
                 if mouseClick != None and mouseClick[0]:
 
-                    # Recomeçar todo o jogo; zerar todas as variáveis.
-                    self.dials = Dials()
-                    self.fruits = []
-                    
-                    self.snake.snakeHit = False
-                    self.snake.segmentsPos = [[20, 15], [19, 15], [18, 15]]
-                    self.snake.newSegmentsPos = []
-                    self.snake.sense = ['right']
-                    self.snake.setInterval = 0.3
-
-                    self.snakePosThread = None
-                    self.snakePosThread = threading.Thread(
-                    target=self.snake.setSnakePos,
-                    args=[self.threadStopEvent, self.gridColumns, self.gridRows])
-                    self.snakePosThread.start()
-
-                    self.fc_fruits = 0
-                    self.fc_match = 0
+                    self.resetGame()
+                    if self.snakePosThread != None:
+                        self.snakePosThread.start() 
                     break
 
             else:
                 mouseOverRestart = False
+            
+            if homeRect.collidepoint(pygame.mouse.get_pos()):
+                mouseOverHome = True
+            else:
+                mouseOverHome = False
+
+            e = pygame.event.get(pygame.MOUSEBUTTONUP)
+            if len(e) > 0 and homeRect.collidepoint(e[0].pos):
+                self.started = False
+                self.resetGame()
+                break
 
             self.listenQuit()
             pygame.display.update()
@@ -370,6 +379,26 @@ class Game:
                 self.snake.segmentsPos.append(
                     self.snake.segmentsPos[-1]
                 )
+    
+    def resetGame (self):
+
+        # Recomeçar todo o jogo; zerar todas as variáveis.
+        self.dials = Dials()
+        self.fruits = []
+        
+        self.snake.snakeHit = False
+        self.snake.segmentsPos = [[20, 15], [19, 15], [18, 15]]
+        self.snake.newSegmentsPos = []
+        self.snake.sense = ['right']
+        self.snake.setInterval = 0.3
+
+        self.snakePosThread = None
+        self.snakePosThread = threading.Thread(
+        target=self.snake.setSnakePos,
+        args=[self.threadStopEvent, self.gridColumns, self.gridRows])
+
+        self.fc_fruits = 0
+        self.fc_match = 0
 
 gameInstance = Game()
 gameInstance.mainLoop()
