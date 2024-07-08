@@ -298,7 +298,8 @@ class Game:
                 (self.winHeight/3) - (lostSurface.get_height()/2)
                 )
             
-            restartButton = lostFont.render(
+            buttonFont = pygame.font.SysFont('UbuntuMono', 25)
+            restartButton = buttonFont.render(
                 trans['restart'],
                 True,
                 '#0d0d0d' if mouseOverRestart else '#ffffff',
