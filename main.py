@@ -274,12 +274,6 @@ class Game:
 
                 else:                
                     mouseOverEn = False
-            
-            else:
-                # self.win.subsurface(langPortPos, langPortuguese.get_size()).fill(self.winBgColor)
-                # self.win.subsurface(langEnPos, langEnglish.get_size()).fill(self.winBgColor)
-                pass
-
 
             self.listenQuit()
             pygame.display.update()
