@@ -15,6 +15,9 @@ class Game:
         pygame.display.init()
         pygame.display.set_caption('Snake Odyssey')
         
+        self.icon = pygame.image.load('icon.png')
+        pygame.display.set_icon(self.icon)
+
         self.started = False
 
         self.dials = Dials()
