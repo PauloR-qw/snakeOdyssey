@@ -1,0 +1,5 @@
+Package: snakeodyssey
+Version: 1.0.0
+Architecture: amd64
+Maintainer: Paulo Ricardo <https://github.com/PauloR-qw>
+Description: Um jogo da cobrinha
