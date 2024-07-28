@@ -5,7 +5,7 @@ from pygame import K_DOWN, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_w, K_a, K_s, K_d, 
 
 class Snake:
 
-    def __init__(self):
+    def __init__(self, sounds):
         
         self.segmentsPos = [[20, 15], [19, 15], [18, 15]]
         self.newSegmentsPos = []
@@ -16,6 +16,7 @@ class Snake:
         self.rush = False
         self.rushInterval = self.setInterval * 0.3
         self.snakeHit = False
+        self.sounds = sounds
     
     def setSnakeSense (self, keysPressed):
 
@@ -92,11 +93,13 @@ class Snake:
             elif self.newSegmentsPos[0] in self.newSegmentsPos[3:]:
 
                 self.snakeHit = True
+                self.sounds['collision'].play()
                 break
 
             else:
 
                 self.segmentsPos = self.newSegmentsPos.copy()
+                self.sounds['walk'].play()
 
                 if self.rush:
                     sleep(self.rushInterval)

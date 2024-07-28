@@ -6,6 +6,7 @@ from classes.Dials import Dials
 import threading
 import asyncio
 import pygame
+import os
 
 class Game:
 
@@ -14,6 +15,8 @@ class Game:
         pygame.font.init()
         pygame.display.init()
         pygame.display.set_caption('Snake Odyssey')
+        pygame.mixer.init()
+        self.sounds = self.loadSounds()
         
         self.icon = pygame.image.load('icon.png')
         pygame.display.set_icon(self.icon)
@@ -22,7 +25,7 @@ class Game:
 
         self.dials = Dials()
 
-        self.snake = Snake()
+        self.snake = Snake(self.sounds)
         self.fruits = []
         self.fruitsLimit = 4
 
@@ -225,6 +228,7 @@ class Game:
                 if mouseClick != None and mouseClick[0]:
                     self.started = True
                     if self.snakePosThread != None:
+                        self.sounds['click'].play()
                         self.snakePosThread.start()
             else:
                 mouseOverStart = False
@@ -232,6 +236,7 @@ class Game:
             if quitRect.collidepoint(pygame.mouse.get_pos()):
                 mouseOverQuit = True
                 if mouseClick != None and mouseClick[0]:
+                    self.sounds['click'].play()
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
             else:
                 mouseOverQuit = False
@@ -244,6 +249,7 @@ class Game:
             for e in pygame.event.get(pygame.MOUSEBUTTONUP, False):
                 
                 if langRect.collidepoint(e.pos):
+                    self.sounds['click'].play()
                     langSelect = not langSelect
 
             if langSelect:
@@ -257,6 +263,7 @@ class Game:
                 
                     if mouseClick != None and mouseClick[0]:
                         
+                        self.sounds['click'].play()
                         langSelect = False
                         config = Data.getConfigs()
                         config['language'] = 'pt-br'
@@ -270,6 +277,7 @@ class Game:
 
                     if mouseClick != None and mouseClick[0]:
 
+                        self.sounds['click'].play()
                         langSelect = False
                         config = Data.getConfigs()
                         config['language'] = 'en'
@@ -339,6 +347,7 @@ class Game:
 
                     self.resetGame()
                     if self.snakePosThread != None:
+                        self.sounds['click'].play()
                         self.snakePosThread.start() 
                     break
 
@@ -352,6 +361,8 @@ class Game:
 
             e = pygame.event.get(pygame.MOUSEBUTTONUP)
             if len(e) > 0 and homeRect.collidepoint(e[0].pos):
+
+                self.sounds['click'].play()
                 self.started = False
                 self.resetGame()
                 break
@@ -379,6 +390,7 @@ class Game:
             if self.snake.segmentsPos[0] == fruit.position:
                 self.fruits.remove(fruit)
                 self.dials.score += 1
+                self.sounds['eat'].play()
                 self.snake.segmentsPos.append(
                     self.snake.segmentsPos[-1]
                 )
@@ -402,6 +414,20 @@ class Game:
 
         self.fc_fruits = 0
         self.fc_match = 0
+    
+    def loadSounds (self):
+
+        sounds = {}
+
+        for s in os.listdir('sound'):
+            
+            soundFile = open(f'sound/{s}')
+            soundName = s.replace('.wav', '')
+            sound = pygame.mixer.Sound(soundFile)
+
+            sounds[soundName] = sound
+
+        return sounds
 
 gameInstance = Game()
 gameInstance.mainLoop()
