@@ -12,9 +12,7 @@ class Snake:
         self.sense = ['right']
         self.segment = Rect(0, 0, 10, 10)
         self.color = '#008000' # #66ff66 20%
-        self.setInterval = 0.3
-        self.rush = False
-        self.rushInterval = self.setInterval * 0.3
+        self.setInterval = 0.15
         self.snakeHit = False
         self.sounds = sounds
     
@@ -101,10 +99,7 @@ class Snake:
                 self.segmentsPos = self.newSegmentsPos.copy()
                 self.sounds['walk'].play()
 
-                if self.rush:
-                    sleep(self.rushInterval)
-                else:
-                    sleep(self.setInterval)
+                sleep(self.setInterval)
 
                 if stopEvent.is_set():
                     break
